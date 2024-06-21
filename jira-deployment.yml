@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: jira
+spec: 
+  replicas: 1
+  selector:
+    matchLabels:
+      app: jira
+  strategy:
+    type: Recreate 
+  template: 
+    metadata: 
+      labels: 
+        app: jira
+    spec: 
+      containers:
+        - name: jira
+          image: atlassian/jira-software
+          ports:
+            - containerPort: 8080
+              name: jira    
+          volumeMounts:
+            - name: jira-persistent-storage
+              mountPath: /var/lib/jira                                             
+      volumes: 
+        - name: jira-persistent-storage
+          persistentVolumeClaim:
+            claimName: ebs-jira-pv-claim
